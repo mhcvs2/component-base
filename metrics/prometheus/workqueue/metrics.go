@@ -18,6 +18,7 @@ package workqueue
 
 import (
 	"k8s.io/client-go/util/workqueue"
+
 	k8smetrics "k8s.io/component-base/metrics"
 	"k8s.io/component-base/metrics/legacyregistry"
 )
@@ -105,7 +106,7 @@ func init() {
 	for _, m := range metrics {
 		legacyregistry.MustRegister(m)
 	}
-	workqueue.SetProvider(prometheusMetricsProvider{})
+	//workqueue.SetProvider(prometheusMetricsProvider{})
 }
 
 func (prometheusMetricsProvider) NewDepthMetric(name string) workqueue.GaugeMetric {
