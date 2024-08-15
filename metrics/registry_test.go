@@ -237,8 +237,8 @@ func TestShowHiddenMetric(t *testing.T) {
 	assert.Nil(t, err, "Gather failed %v", err)
 	assert.Equalf(t, expectedMetricCount, len(ms), "Got %v metrics, Want: %v metrics", len(ms), expectedMetricCount)
 
-	showHidden.Store(true)
-	defer showHidden.Store(false)
+	showHidden.Store(1)
+	defer showHidden.Store(0)
 	registry.MustRegister(NewCounter(
 		&CounterOpts{
 			Namespace:         "some_namespace",
@@ -375,7 +375,7 @@ func TestEnableHiddenMetrics(t *testing.T) {
 			SetShowHidden()
 			defer func() {
 				showHiddenOnce = *new(sync.Once)
-				showHidden.Store(false)
+				showHidden.Store(0)
 			}()
 
 			tc.counter.Inc()
@@ -457,7 +457,7 @@ func TestEnableHiddenStableCollector(t *testing.T) {
 			SetShowHidden()
 			defer func() {
 				showHiddenOnce = *new(sync.Once)
-				showHidden.Store(false)
+				showHidden.Store(0)
 			}()
 
 			if err := testutil.GatherAndCompare(registry, strings.NewReader(tc.expectMetricsAfterEnable), tc.metricNames...); err != nil {

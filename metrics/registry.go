@@ -32,7 +32,7 @@ import (
 var (
 	showHiddenOnce      sync.Once
 	disabledMetricsLock sync.RWMutex
-	showHidden          atomic.Bool
+	showHidden          atomic.Int32
 	registries          []*kubeRegistry // stores all registries created by NewKubeRegistry()
 	registriesLock      sync.RWMutex
 	disabledMetrics     = map[string]struct{}{}
@@ -107,7 +107,7 @@ func SetDisabledMetric(name string) {
 // after the initial call
 func SetShowHidden() {
 	showHiddenOnce.Do(func() {
-		showHidden.Store(true)
+		showHidden.Store(1)
 
 		// re-register collectors that has been hidden in phase of last registry.
 		for _, r := range registries {
@@ -121,7 +121,7 @@ func SetShowHidden() {
 // is enabled. While the primary usecase for this is internal (to determine
 // registration behavior) this can also be used to introspect
 func ShouldShowHidden() bool {
-	return showHidden.Load()
+	return showHidden.Load() == 1
 }
 
 // Registerable is an interface for a collector metric which we
